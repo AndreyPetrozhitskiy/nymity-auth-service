@@ -16,7 +16,7 @@ router.post(
     check("password", "Пароль не может быть пустым").notEmpty(),
     check("age", "Возраст не может быть пустым").notEmpty(),
     check("gender", "Пол не может быть пустым").notEmpty(),
-    check("interest", "Interest должны быть массивом").optional().isArray(),
+    check("interests", "Interests должны быть массивом").optional().isArray(),
   ],
   AuthContoroller.createNewUser
 );
@@ -31,5 +31,5 @@ router.post(
 // Проверка ткоена
 router.get("/check", AuthContoroller.tokenCheck);
 // Новый секретный ключ
-router.get("/newkey", AuthContoroller.generationKey); 
+// router.get("/newkey", AuthContoroller.generationKey); 
 module.exports = router;

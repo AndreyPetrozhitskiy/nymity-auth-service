@@ -8,12 +8,14 @@ dotenv.config();
 const { PORT } = process.env;
 
 const authRouter = require("./Routes/auth.routes");
+const profileRouter = require("./Routes/profile.routes");
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/auth", authRouter);
+app.use("/profile", profileRouter);
 
 // SSL
 

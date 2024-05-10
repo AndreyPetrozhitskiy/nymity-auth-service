@@ -21,13 +21,12 @@ const sequelize = new Sequelize(
   }
 );
 
-
 // Модель для таблицы Users
 const User = sequelize.define("User", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   // Определение полей модели
   login: {
@@ -52,6 +51,11 @@ const UserAdditionalInfo = sequelize.define("UserAdditionalInfo", {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true, // Уникальное значение
+  },
+  login: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
   phone: {
     type: DataTypes.STRING,
@@ -84,12 +88,23 @@ const Interest = sequelize.define("Interest", {
   },
 });
 
+const Server = sequelize.define("Server", {
+  login: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true, // Уникальное значение
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
 // Связь между таблицами Users и UserAdditionalInfo
 User.hasOne(UserAdditionalInfo, {
-  foreignKey: 'userId'
+  foreignKey: "userId",
 });
 UserAdditionalInfo.belongsTo(User, {
-  foreignKey: 'userId'
+  foreignKey: "userId",
 });
 
 // Синхронизация с базой данных и создание таблиц, если их нет
@@ -107,5 +122,6 @@ module.exports = {
   User,
   UserAdditionalInfo,
   Interest,
+  Server,
   sequelize,
 };

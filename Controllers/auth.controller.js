@@ -26,10 +26,20 @@ class AuthContoroller {
         surname,
         age,
         gender,
-        interest = [],
+        interests = [],
       } = req.body;
+      console.log(
+        "Новый запрос на регистрацию:",
+        login,
+        password,
+        email,
+        name,
+        surname,
+        age,
+        gender
+      );
       const existingUser = await User.findOne({ where: { login } });
-      console.log(existingUser);
+
       if (existingUser) {
         return res
           .status(400)
@@ -48,15 +58,24 @@ class AuthContoroller {
         await UserAdditionalInfo.create({
           userId,
           email,
+          login,
           name,
           surname,
           age,
           gender,
         });
       }
-      return res
-        .status(201)
-        .json({ status: true, message: "Пользователь зарегистрирован" });
+      const token = generateAccessToken(userId, login);
+      console.log("Ответ:", {
+        status: true,
+        message: "Пользователь зарегистрирован",
+        token: token,
+      });
+      return res.status(201).json({
+        status: true,
+        message: "Пользователь зарегистрирован",
+        token: token,
+      });
     } catch (e) {
       console.log(`Ошибка: ${e.message}`);
       return res.status(400).json(`Ошибка: ${e.message}`);
@@ -73,6 +92,7 @@ class AuthContoroller {
       }
 
       const { login, password } = req.body;
+      console.log("Новый запрос на авторизацию:", login, password);
       const existingUser = await User.findOne({ where: { login } });
 
       if (existingUser) {
@@ -136,15 +156,18 @@ class AuthContoroller {
           .status(400)
           .json({ status: false, message: "Пользователь не авторизован " });
       }
-
       const decodedData = decodedDataFunc(token);
-      const id = decodedData.id;
-      const checkUser = await User.findAll({ where: { id } });
+      console.log("decodedData:", decodedData);
+      if (decodedData) {
+        const id = decodedData.id;
 
-      if (checkUser.length > 0) {
-        return res
-          .status(201)
-          .json({ status: true, login: checkUser[0].dataValues.login });
+        const checkUser = await User.findAll({ where: { id } });
+
+        if (checkUser.length > 0) {
+          return res
+            .status(201)
+            .json({ status: true, login: checkUser[0].dataValues.login });
+        }
       }
 
       return res
