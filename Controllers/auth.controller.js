@@ -75,6 +75,8 @@ class AuthContoroller {
         status: true,
         message: "Пользователь зарегистрирован",
         token: token,
+        id: userId,
+        login: login,
       });
     } catch (e) {
       console.log(`Ошибка: ${e.message}`);
@@ -110,6 +112,8 @@ class AuthContoroller {
             return res.status(201).json({
               status: true,
               token: token,
+              id: id,
+              login: login,
             });
           } else {
             return res.status(400).json({
@@ -157,16 +161,21 @@ class AuthContoroller {
           .json({ status: false, message: "Пользователь не авторизован " });
       }
       const decodedData = decodedDataFunc(token);
+      console.log(decodedData);
       console.log("decodedData:", decodedData);
       if (decodedData) {
         const id = decodedData.id;
 
         const checkUser = await User.findAll({ where: { id } });
-
+        console.log(checkUser);
         if (checkUser.length > 0) {
           return res
             .status(201)
-            .json({ status: true, login: checkUser[0].dataValues.login });
+            .json({
+              status: true,
+              login: checkUser[0].dataValues.login,
+              id: checkUser[0].dataValues.id,
+            });
         }
       }
 

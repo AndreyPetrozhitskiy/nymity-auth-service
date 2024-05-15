@@ -47,6 +47,10 @@ const UserAdditionalInfo = sequelize.define("UserAdditionalInfo", {
     allowNull: false,
     unique: true, // Уникальное значение
   },
+  Desc: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
