@@ -17,14 +17,15 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 
-// SSL
+// Версия с SSL сертификатами
+
 
 // const privateKey = fs.readFileSync(
-//   "/etc/letsencrypt/live/nymity.freemyip.com/privkey.pem",
+//   "/etc/letsencrypt/live/домен.com/privkey.pem",
 //   "utf8"
 // );
 // const certificate = fs.readFileSync(
-//   "/etc/letsencrypt/live/nymity.freemyip.com/fullchain.pem",
+//   "/etc/letsencrypt/live/домен.com/fullchain.pem",
 //   "utf8"
 // );
 
@@ -40,6 +41,9 @@ app.use("/profile", profileRouter);
 //   console.error("Не получилось подключиться к базе данных:", error);
 // }
 //   });
+
+
+// Версия для разработки
 
 
 app.listen(PORT, async () => {

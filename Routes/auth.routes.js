@@ -2,13 +2,11 @@ const Router = require("express");
 const AuthContoroller = require("../Controllers/auth.controller");
 const { check } = require("express-validator");
 const router = new Router();
-// const authMiddleware = require("../Middlewares/auth.middleware.js");
 
 // Регистрация
 router.post(
   "/registration",
   [
-    // Доделать, обработка интересов interest
     check("login", "Логин не может быть пустым").notEmpty(),
     check("email", "Email не может быть пустым").notEmpty(),
     check("name", "Имя не может быть пустым").notEmpty(),
@@ -18,8 +16,11 @@ router.post(
     check("gender", "Пол не может быть пустым").notEmpty(),
     check("interests", "Interests должны быть массивом").optional().isArray(),
   ],
+  
   AuthContoroller.createNewUser
 );
+
+// Авторизация
 router.post(
   "/login",
   [
@@ -28,8 +29,11 @@ router.post(
   ],
   AuthContoroller.loginUser
 );
-// Проверка ткоена
+
+// Проверка токена
 router.get("/check", AuthContoroller.tokenCheck);
+
 // Новый секретный ключ
 // router.get("/newkey", AuthContoroller.generationKey); 
+
 module.exports = router;

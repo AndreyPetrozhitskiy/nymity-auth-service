@@ -92,6 +92,7 @@ const Interest = sequelize.define("Interest", {
   },
 });
 
+// Модель для таблицы Server
 const Server = sequelize.define("Server", {
   login: {
     type: DataTypes.STRING,
@@ -103,12 +104,65 @@ const Server = sequelize.define("Server", {
     allowNull: false,
   },
 });
+
+// Модель для таблицы Subscribers
+const Subscribers = sequelize.define(
+  "Subscribers",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: UserAdditionalInfo,
+        key: "userId",
+      },
+    },
+    subId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: UserAdditionalInfo,
+        key: "userId",
+      },
+    },
+  },
+  {
+    indexes: [
+      {
+        unique: true,
+        fields: ["userId", "subId"],
+      },
+    ],
+  }
+);
+
 // Связь между таблицами Users и UserAdditionalInfo
 User.hasOne(UserAdditionalInfo, {
   foreignKey: "userId",
 });
 UserAdditionalInfo.belongsTo(User, {
   foreignKey: "userId",
+});
+
+// Связь между таблицами UserAdditionalInfo и Subscribers для userId
+UserAdditionalInfo.hasMany(Subscribers, {
+  foreignKey: "userId",
+});
+Subscribers.belongsTo(UserAdditionalInfo, {
+  foreignKey: "userId",
+});
+
+// Связь между таблицами UserAdditionalInfo и Subscribers для subId
+UserAdditionalInfo.hasMany(Subscribers, {
+  foreignKey: "subId",
+});
+Subscribers.belongsTo(UserAdditionalInfo, {
+  foreignKey: "subId",
 });
 
 // Синхронизация с базой данных и создание таблиц, если их нет
@@ -127,5 +181,6 @@ module.exports = {
   UserAdditionalInfo,
   Interest,
   Server,
+  Subscribers,
   sequelize,
 };

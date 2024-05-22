@@ -3,11 +3,11 @@ const fs = require("fs");
 const path = require("path");
 const cipherData = fs.readFileSync(path.join(__dirname, "../key.json"));
 const { key, algorithm } = JSON.parse(cipherData);
-const crypto = require("crypto");
 
+// Создание нового токена
 const generateAccessToken = (id, login) => {
   try{
-    console.log(key)
+   
     if (key) {
       
       return jwt.sign({ id, login }, key, { expiresIn: "72h" });
@@ -19,6 +19,7 @@ const generateAccessToken = (id, login) => {
   }
   
 };
+// Расшифровка токена
 const decodedDataFunc = (token) => {
   if (key) {
     try {
@@ -30,7 +31,7 @@ const decodedDataFunc = (token) => {
     console.error("AuthFunc.JS . Проблема с ключом шифрования");
   }
 };
-
+// Создание нового секретного ключа
 const generateKeySecret = () => {
   const keyFilePath = path.join(__dirname, "../key.json");
   fs.writeFileSync(keyFilePath, JSON.stringify({ key, algorithm }));

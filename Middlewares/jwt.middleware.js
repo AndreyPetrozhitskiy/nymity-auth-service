@@ -1,3 +1,5 @@
+// MIDDLEWARE для проверки токена
+
 const { User } = require("../Database/sequlize.js");
 const { decodedDataFunc } = require("../Func/AuthFunc.js");
 module.exports = async function (req, res, next) {
