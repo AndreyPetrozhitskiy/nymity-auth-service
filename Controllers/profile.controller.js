@@ -414,6 +414,73 @@ class ProfileContoroller {
   }
 
   // Получение подписок
+  // async getSubscriptions(req, res) {
+  //   try {
+  //     const errors = validationResult(req);
+  //     if (!errors.isEmpty()) {
+  //       return res
+  //         .status(400)
+  //         .json(errors.errors.map((e, index) => `${index}. Ошибка: ${e.msg}`));
+  //     }
+
+  //     const { userID, customization } = req.body;
+
+  //     // Проверка существования пользователя
+  //     const checkUserId = await UserAdditionalInfo.findOne({
+  //       where: { userId: userID },
+  //     });
+
+  //     if (!checkUserId) {
+  //       return res.status(400).json({
+  //         status: false,
+  //         error: "Неверный идентификатор пользователя.",
+  //       });
+  //     }
+
+  //     if (customization === "number") {
+  //       // Запрос количества подписок
+  //       const subscriptionCount = await Subscribers.count({
+  //         where: { userId: userID },
+  //       });
+
+  //       return res.json({
+  //         status: true,
+  //         count: subscriptionCount,
+  //       });
+  //     } else if (customization === "users") {
+  //       // Запрос подписок
+  //       const subscriptions = await Subscribers.findAll({
+  //         where: { userId: userID },
+  //       });
+
+  //       if (subscriptions.length === 0) {
+  //         return res.json({
+  //           status: true,
+  //           subscribers: [],
+  //         });
+  //       }
+
+  //       // Получение информации о подписках
+  //       const subscriptionIds = subscriptions.map((sub) => sub.subId);
+  //       const subscriptionInfo = await UserAdditionalInfo.findAll({
+  //         where: { userId: subscriptionIds },
+  //       });
+
+  //       return res.json({
+  //         status: true,
+  //         subscribers: subscriptionInfo,
+  //       });
+  //     } else {
+  //       return res.status(400).json({
+  //         status: false,
+  //         error: "Неверное значение параметра customization.",
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(`Ошибка: ${e.message}`);
+  //     return res.status(400).json(`Ошибка: ${e.message}`);
+  //   }
+  // }
   async getSubscriptions(req, res) {
     try {
       const errors = validationResult(req);
@@ -422,27 +489,38 @@ class ProfileContoroller {
           .status(400)
           .json(errors.errors.map((e, index) => `${index}. Ошибка: ${e.msg}`));
       }
-
-      const { userID, customization } = req.body;
-
+  
+      const { slug, customization } = req.body;
+  
       // Проверка существования пользователя
-      const checkUserId = await UserAdditionalInfo.findOne({
-        where: { userId: userID },
-      });
-
-      if (!checkUserId) {
+      let checkUser;
+      if (isNaN(slug)) {
+        // Если slug не является числом, ищем по login
+        checkUser = await UserAdditionalInfo.findOne({
+          where: { login: slug },
+        });
+      } else {
+        // Если slug является числом, ищем по userId
+        checkUser = await UserAdditionalInfo.findOne({
+          where: { userId: slug },
+        });
+      }
+  
+      if (!checkUser) {
         return res.status(400).json({
           status: false,
           error: "Неверный идентификатор пользователя.",
         });
       }
-
+  
+      const userID = checkUser.userId;
+  
       if (customization === "number") {
         // Запрос количества подписок
         const subscriptionCount = await Subscribers.count({
           where: { userId: userID },
         });
-
+  
         return res.json({
           status: true,
           count: subscriptionCount,
@@ -452,20 +530,20 @@ class ProfileContoroller {
         const subscriptions = await Subscribers.findAll({
           where: { userId: userID },
         });
-
+  
         if (subscriptions.length === 0) {
           return res.json({
             status: true,
             subscribers: [],
           });
         }
-
+  
         // Получение информации о подписках
         const subscriptionIds = subscriptions.map((sub) => sub.subId);
         const subscriptionInfo = await UserAdditionalInfo.findAll({
           where: { userId: subscriptionIds },
         });
-
+  
         return res.json({
           status: true,
           subscribers: subscriptionInfo,
@@ -490,27 +568,45 @@ class ProfileContoroller {
           .status(400)
           .json(errors.errors.map((e, index) => `${index}. Ошибка: ${e.msg}`));
       }
-
-      const { userID, customization } = req.body;
-
+  
+      const { slug, customization } = req.body;
+  
+      if (!slug) {
+        return res.status(400).json({
+          status: false,
+          error: "Отсутствует параметр slug.",
+        });
+      }
+  
       // Проверка существования пользователя
-      const checkSubUserId = await UserAdditionalInfo.findOne({
-        where: { userId: userID },
-      });
-
-      if (!checkSubUserId) {
+      let checkUser;
+      if (isNaN(slug)) {
+        // Если slug не является числом, ищем по login
+        checkUser = await UserAdditionalInfo.findOne({
+          where: { login: slug },
+        });
+      } else {
+        // Если slug является числом, ищем по userId
+        checkUser = await UserAdditionalInfo.findOne({
+          where: { userId: slug },
+        });
+      }
+  
+      if (!checkUser) {
         return res.status(400).json({
           status: false,
           error: "Неверный идентификатор пользователя.",
         });
       }
-
+  
+      const userID = checkUser.userId;
+  
       if (customization === "number") {
         // Запрос количества подписчиков
         const subscriberCount = await Subscribers.count({
           where: { subId: userID },
         });
-
+  
         return res.json({
           status: true,
           count: subscriberCount,
@@ -520,20 +616,20 @@ class ProfileContoroller {
         const subscribers = await Subscribers.findAll({
           where: { subId: userID },
         });
-
+  
         if (subscribers.length === 0) {
           return res.json({
             status: true,
             subscribers: [],
           });
         }
-
+  
         // Получение информации о подписчиках
         const subscriberIds = subscribers.map((sub) => sub.userId);
         const subscriberInfo = await UserAdditionalInfo.findAll({
           where: { userId: subscriberIds },
         });
-
+  
         return res.json({
           status: true,
           subscribers: subscriberInfo,

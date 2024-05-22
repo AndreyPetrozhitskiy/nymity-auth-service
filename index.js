@@ -32,7 +32,7 @@ app.use("/profile", profileRouter);
 // const credentials = { key: privateKey, cert: certificate };
 // const httpsServer = https.createServer(credentials, app);
 
-// httpsServer.listen(PORT, () => {
+// httpsServer.listen(PORT, async () => {
 //     console.log(`HTTPS Server running on port ${PORT}`);
 // try {
 //   await sequelize.authenticate();

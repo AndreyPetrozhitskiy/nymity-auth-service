@@ -6,7 +6,7 @@ const JWTmiddleware = require("../Middlewares/jwt.middleware");
 const allowFieldsMiddleware = require("../Middlewares/allowFields.middleware");
 
 // Получение списка всех пользователей
-router.get("/getUsers", profileContoroller.getUsers);
+router.get("/getUsers", JWTmiddleware, profileContoroller.getUsers);
 
 // Получение конкретного пользовтеля по ID
 router.get("/getUsers/:slug", profileContoroller.getUsersID);
@@ -44,20 +44,20 @@ router.post(
 );
 
 // Получение подписок
-router.get(
+router.post(
   "/getSubscriptions",
   [
-    check("userID", "userID не может быть пустым").notEmpty(),
+    check("slug", "userID не может быть пустым").notEmpty(),
     check("customization", "customization не может быть пустым").notEmpty(),
   ],
   profileContoroller.getSubscriptions
 );
 
 // Получение подписчиков
-router.get(
+router.post(
   "/getSubscribers",
   [
-    check("userID", "userID не может быть пустым").notEmpty(),
+    check("slug", "userID не может быть пустым").notEmpty(),
     check("customization", "customization не может быть пустым").notEmpty(),
   ],
   profileContoroller.getSubscribers
